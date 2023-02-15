@@ -1,0 +1,6 @@
+glfw
+pyopengl
+noise
+scikit-learn
+
+
