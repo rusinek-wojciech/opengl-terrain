@@ -52,7 +52,7 @@ def generate_vertices(heightmap, heightmap_size):
 
     for x in range(heightmap_size[0]):
         for y in range(heightmap_size[1]):
-            point = (step_x * x, step_y * y, max_height * heightmap[x][y])
+            point = (step_x * x, max_height * heightmap[x][y], step_y * y)
             vertices.append(point)
 
     return vertices
@@ -93,4 +93,3 @@ def generate():
     export_obj(vertices, tris, filename="meshes/generated_terrain.obj")
 
 
-generate()
