@@ -8,7 +8,7 @@ from ObjLoader import ObjLoader
 from camera import Camera
 from generator import generate
 
-is_random_terrain = False
+is_random_terrain = True
 cam = Camera()
 WIDTH, HEIGHT = 1280, 720
 lastX, lastY = WIDTH / 2, HEIGHT / 2

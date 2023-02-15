@@ -6,30 +6,28 @@ import numpy
 import numpy as np
 from sklearn import preprocessing
 
-SCALE = 100
-MAP_SIZE = [1000, 1000]
+SIZE = 1000
+SIZES = [SIZE, SIZE]
 
-def perlin_nosie(coords, seed):
-    return noise.pnoise2(coords[0]/SCALE,
-                          coords[1]/SCALE,
+def perlin_nosie(x, y, seed):
+    return noise.pnoise2(x / SIZE,
+                          y / SIZE,
                           octaves=7,
                           persistence=0.5,
                           lacunarity=2,
-                          repeatx=MAP_SIZE[0],
-                          repeaty=MAP_SIZE[1],
+                          repeatx=SIZES[0],
+                          repeaty=SIZES[1],
                           base=seed
                          )
 
 def generate_heightmap(map_size):
     seed = int(random.random()*1000)
-    minimum = 0
-    maximum = 0
     heightmap = np.zeros(map_size)
 
-    for x in range(map_size[0]):
-        for y in range(map_size[1]):
-            new_value = perlin_nosie((x, y), seed)
-            heightmap[x][y] = new_value
+    for y in range(map_size[0]):
+        for x in range(map_size[1]):
+            new_value = perlin_nosie(x, y, seed)
+            heightmap[y][x] = new_value
     min_max_scaler = preprocessing.MinMaxScaler()
     return min_max_scaler.fit_transform(heightmap)
 
@@ -45,22 +43,18 @@ def expo(heightmap, heightmap_size, e):
 
 def generate_vertices(heightmap, heightmap_size):
     vertices = []
-
-    # The origin and size of mesh
-    origin = (-1, -0.75, -1)
-    size = 2
-    max_height = 0.5
+    size = 1000
+    max_height = 100
 
     # We need to calculate the step between vertices
-    step_x = size/(heightmap_size[0]-1)
-    step_y = size/(heightmap_size[1]-1)
+    step_x = size / heightmap_size[0]
+    step_y = size / heightmap_size[1]
 
     for x in range(heightmap_size[0]):
         for y in range(heightmap_size[1]):
-            x_coord = step_x*x
-            y_coord = max_height*heightmap[x][y]
-            z_coord = step_y*y
-            vertices.append((x_coord, y_coord, z_coord))
+            point = (step_x * x, step_y * y, max_height * heightmap[x][y])
+            vertices.append(point)
+
     return vertices
 
 def generate_tris(grid_size):
@@ -87,17 +81,16 @@ def export_obj(vertices, tris, filename):
 
 
 def generate():
-    size = 1000
-    map_size = [size, size]
-    heightmap = generate_heightmap(map_size)
-    heightmap_expo = expo(heightmap.copy(), map_size, 2)
+    heightmap = generate_heightmap(SIZES)
+    heightmap_expo = expo(heightmap.copy(), SIZES, 2)
 
     new_image = Image.fromarray(heightmap * 255)
     new_image = new_image.convert("L")
     new_image.save('meshes/generated_terrain.png')
 
-    vertices = generate_vertices(heightmap, [size, size])
-    tris = generate_tris([size, size])
+    vertices = generate_vertices(heightmap, SIZES)
+    tris = generate_tris(SIZES)
     export_obj(vertices, tris, filename="meshes/generated_terrain.obj")
 
 
+generate()
