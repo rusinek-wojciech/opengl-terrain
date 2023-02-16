@@ -1,71 +1,52 @@
 import noise
 import random
 from PIL import Image
-
-import numpy
 import numpy as np
 from sklearn import preprocessing
 
-SIZE = 1000
-SIZES = [SIZE, SIZE]
+MAP_SIZE = 100
+STEP = 10
+STEPS = MAP_SIZE * STEP
+MAX_HEIGHT = 10
 
-def perlin_nosie(x, y, seed):
-    return noise.pnoise2(x / SIZE,
-                          y / SIZE,
+def perlin_noise(x, y, seed):
+    return noise.pnoise2(x / STEPS,
+                          y / STEPS,
                           octaves=7,
                           persistence=0.5,
                           lacunarity=2,
-                          repeatx=SIZES[0],
-                          repeaty=SIZES[1],
+                          repeatx=MAP_SIZE,
+                          repeaty=MAP_SIZE,
                           base=seed
                          )
 
-def generate_heightmap(map_size):
-    seed = int(random.random()*1000)
-    heightmap = np.zeros(map_size)
-
-    for y in range(map_size[0]):
-        for x in range(map_size[1]):
-            new_value = perlin_nosie(x, y, seed)
-            heightmap[y][x] = new_value
+def generate_heightmap():
+    seed = 100 + int(random.random() * 1000)
+    heightmap = np.zeros([STEPS, STEPS])
+    for y in range(STEPS):
+        for x in range(STEPS):
+            heightmap[y][x] = perlin_noise(x, y, seed)
     min_max_scaler = preprocessing.MinMaxScaler()
     return min_max_scaler.fit_transform(heightmap)
 
 
-
-# exponentional function
-def expo(heightmap, heightmap_size, e):
-    for x in range(heightmap_size[0]):
-        for y in range(heightmap_size[1]):
-            heightmap[x][y] = heightmap[x][y]**e
-    min_max_scaler = preprocessing.MinMaxScaler()
-    return min_max_scaler.fit_transform(heightmap)
-
-def generate_vertices(heightmap, heightmap_size):
+def generate_vertices(heightmap):
     vertices = []
-    size = 1000
-    max_height = 100
-
-    # We need to calculate the step between vertices
-    step_x = size / heightmap_size[0]
-    step_y = size / heightmap_size[1]
-
-    for x in range(heightmap_size[0]):
-        for y in range(heightmap_size[1]):
-            point = (step_x * x, max_height * heightmap[x][y], step_y * y)
+    for x in range(STEPS):
+        for y in range(STEPS):
+            point = (x / STEP, MAX_HEIGHT * heightmap[x][y], y / STEP)
             vertices.append(point)
-
     return vertices
 
-def generate_tris(grid_size):
+def generate_tris():
     tris = []
-    for x in range(grid_size[0]-1):
-        for y in range(grid_size[1]-1):
-            index = x*grid_size[0]+y
+    for x in range(STEPS - 1):
+        for y in range(STEPS - 1):
+            index = x * STEPS + y
             a = index
-            b = index+1
-            c = index+grid_size[0]+1
-            d = index+grid_size[0]
+            b = index + 1
+            c = index + STEPS + 1
+            d = index + STEPS
             tris.append((a, b, c))
             tris.append((a, c, d))
     return tris
@@ -75,23 +56,34 @@ def export_obj(vertices, tris, filename):
     for vertex in vertices:
       file.write("v " + str(vertex[0]) + " " + str(vertex[1]) + " " + str(vertex[2]) + "\n")
     for tri in tris:
-      file.write("f " + str(tri[2]+1) + " " + str(tri[1]+1) + " " + str(tri[0]+1) + "\n")
+      file.write("f " + str(tri[2] + 1) + " " + str(tri[1] + 1) + " " + str(tri[0] + 1) + "\n")
     file.close()
     return
 
 
-def generate():
-    heightmap = generate_heightmap(SIZES)
-    heightmap_expo = expo(heightmap.copy(), SIZES, 2)
+def generate_model(heightmap):
+    vertices = generate_vertices(heightmap)
+    tris = generate_tris()
+    export_obj(vertices, tris, filename="meshes/generated_terrain.obj")
 
-    new_image = Image.fromarray(heightmap * 255)
-    new_image = new_image.convert("L")
+
+def generate_image(heightmap):
+    heightmap_RGB = np.zeros((STEPS, STEPS, 3), 'uint8')
+    for x in range(STEPS):
+        for y in range(STEPS):
+            heightmap_RGB[x, y, 0] = 0
+            heightmap_RGB[x, y, 1] = heightmap[x, y] * 255
+            heightmap_RGB[x, y, 2] = 0
+    new_image = Image.fromarray(heightmap_RGB, mode='RGB')
     new_image.save('meshes/generated_terrain.png')
 
-    vertices = generate_vertices(heightmap, SIZES)
-    tris = generate_tris(SIZES)
-    export_obj(vertices, tris, filename="meshes/generated_terrain.obj")
+
+def generate():
+    heightmap = generate_heightmap()
+    generate_model(heightmap)
+    generate_image(heightmap)
 
 
 if __name__ == "__main__":
     generate()
+

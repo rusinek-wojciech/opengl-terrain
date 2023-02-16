@@ -91,10 +91,8 @@ class ObjLoader:
                 line = f.readline()
 
         if sorted:
-            # use with glDrawArrays
             ObjLoader.create_sorted_vertex_buffer(all_indices, vert_coords, tex_coords, norm_coords)
         else:
-            # use with glDrawElements
             ObjLoader.create_unsorted_vertex_buffer(all_indices, vert_coords, tex_coords, norm_coords)
 
         # ObjLoader.show_buffer_data(ObjLoader.buffer)

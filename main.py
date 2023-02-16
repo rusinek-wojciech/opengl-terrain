@@ -2,19 +2,17 @@ import glfw
 from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 import pyrr
-from TextureLoader import load_texture
+from utils import load_texture
 from ObjLoader import ObjLoader
-
-from pywavefront import visualization
-from pywavefront import Wavefront
 
 from movement import Movement
 from generator import generate
 
 WIDTH, HEIGHT = 1280, 720
-IS_RANDOM_TERRAIN = False
+IS_RANDOM_TERRAIN = True
 movement = Movement(WIDTH, HEIGHT)
-terrain_path = "meshes/generated_terrain.obj" if IS_RANDOM_TERRAIN else "meshes/bieszczady_v2_x100.obj"
+terrain_path = "meshes/generated_terrain.obj" if IS_RANDOM_TERRAIN else "meshes/bieszczady_1_2.obj"
+texture_path = "meshes/generated_terrain.png" if IS_RANDOM_TERRAIN else "meshes/mapa_kolorowa.jpg"
 
 def window_resize_callback(window, width, height):
     glViewport(0, 0, width, height)
@@ -76,9 +74,9 @@ if IS_RANDOM_TERRAIN:
     generate()
 
 floor_indices, floor_buffer = ObjLoader.load_model(terrain_path)
-# terrain = Wavefront(terrain_path)
-
-shader = compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
+vertex_shader = compileShader(vertex_src, GL_VERTEX_SHADER)
+fragment_shader = compileShader(fragment_src, GL_FRAGMENT_SHADER)
+shader = compileProgram(vertex_shader, fragment_shader)
 
 VAO = glGenVertexArrays(2)
 VBO = glGenBuffers(2)
@@ -95,7 +93,7 @@ glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, floor_buffer.itemsize * 8, ctype
 glEnableVertexAttribArray(2)
 
 textures = glGenTextures(2)
-load_texture("meshes/floor.png", textures[0])
+load_texture(texture_path, textures[0])
 
 glUseProgram(shader)
 glClearColor(0.53, 0.8, 0.92, 1)
@@ -127,7 +125,6 @@ while not glfw.window_should_close(window):
     glDrawArrays(GL_TRIANGLES, 0, len(floor_indices))
 
     glfw.swap_buffers(window)
-    visualization.draw(terrain)
 
 
 glfw.terminate()

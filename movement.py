@@ -4,8 +4,8 @@ from camera import Camera
 class Movement:
 
 	def __init__(self, width, height):
-		self.boosted_speed = 1
-		self.normal_speed = 0.1
+		self.boosted_speed = 0.25
+		self.normal_speed = 0.01
 		self.camera = Camera()
 
 		self.left = False
