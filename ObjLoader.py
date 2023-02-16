@@ -55,22 +55,12 @@ class ObjLoader:
 
 
     @staticmethod
-    def show_buffer_data(buffer):
-        for i in range(len(buffer)//8):
-            start = i * 8
-            end = start + 8
-            print(buffer[start:end])
-
-
-    @staticmethod
     def load_model(file, sorted=True):
-        vert_coords = [] # will contain all the vertex coordinates
-        tex_coords = [] # will contain all the texture coordinates
-        norm_coords = [] # will contain all the vertex normals
-
-        all_indices = [] # will contain all the vertex, texture and normal indices
-        indices = [] # will contain the indices for indexed drawing
-
+        vert_coords = []
+        tex_coords = []
+        norm_coords = []
+        all_indices = []
+        indices = []
 
         with open(file, 'r') as f:
             line = f.readline()
@@ -86,7 +76,7 @@ class ObjLoader:
                     for value in values[1:]:
                         val = value.split('/')
                         ObjLoader.search_data(val, all_indices, 'f', 'int')
-                        indices.append(int(val[0])-1)
+                        indices.append(int(val[0]) - 1)
 
                 line = f.readline()
 
@@ -94,8 +84,6 @@ class ObjLoader:
             ObjLoader.create_sorted_vertex_buffer(all_indices, vert_coords, tex_coords, norm_coords)
         else:
             ObjLoader.create_unsorted_vertex_buffer(all_indices, vert_coords, tex_coords, norm_coords)
-
-        # ObjLoader.show_buffer_data(ObjLoader.buffer)
 
         buffer = ObjLoader.buffer.copy() # create a local copy of the buffer list, otherwise it will overwrite the static field buffer
         ObjLoader.buffer = [] # after copy, make sure to set it back to an empty list

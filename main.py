@@ -9,10 +9,14 @@ from movement import Movement
 from generator import generate
 
 WIDTH, HEIGHT = 1280, 720
-IS_RANDOM_TERRAIN = True
+IS_RANDOM_TERRAIN = False
+# terrain_path = "meshes/generated_terrain.obj" if IS_RANDOM_TERRAIN else "meshes/bieszczady_1_2.obj"
+# texture_path = "meshes/generated_terrain.png" if IS_RANDOM_TERRAIN else "meshes/mapa_kolorowa.jpg"
+
+terrain_path = "meshes/generated_terrain.obj" if IS_RANDOM_TERRAIN else "meshes/testowe_ze_zdj.obj"
+texture_path = "meshes/generated_terrain.png" if IS_RANDOM_TERRAIN else "meshes/testowe.png"
+
 movement = Movement(WIDTH, HEIGHT)
-terrain_path = "meshes/generated_terrain.obj" if IS_RANDOM_TERRAIN else "meshes/bieszczady_1_2.obj"
-texture_path = "meshes/generated_terrain.png" if IS_RANDOM_TERRAIN else "meshes/mapa_kolorowa.jpg"
 
 def window_resize_callback(window, width, height):
     glViewport(0, 0, width, height)
