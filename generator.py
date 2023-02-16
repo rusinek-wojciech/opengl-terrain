@@ -93,3 +93,5 @@ def generate():
     export_obj(vertices, tris, filename="meshes/generated_terrain.obj")
 
 
+if __name__ == "__main__":
+    generate()

@@ -2,6 +2,7 @@ from pyrr import Vector3, vector, vector3, matrix44
 from math import sin, cos, radians
 
 class Camera:
+
     def __init__(self):
         self.camera_pos = Vector3([0.0, 4.0, 3.0])
         self.camera_front = Vector3([0.0, 0.0, -1.0])
