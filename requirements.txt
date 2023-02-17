@@ -2,5 +2,3 @@ glfw
 pyopengl
 noise
 scikit-learn
-pywavefront
-pyglet<2

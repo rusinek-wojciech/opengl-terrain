@@ -9,8 +9,8 @@ from movement import Movement
 from generator import generate
 
 WIDTH, HEIGHT = 1280, 720
-IS_RANDOM_TERRAIN = False
-terrain_path = "meshes/generated_terrain.obj" if IS_RANDOM_TERRAIN else "meshes/bieszczady_1_2.obj"
+IS_RANDOM_TERRAIN = True
+terrain_path = "meshes/generated_terrain.obj" if IS_RANDOM_TERRAIN else "meshes/bieszczady_10_2.obj"
 texture_path = "meshes/generated_terrain.png" if IS_RANDOM_TERRAIN else "meshes/mapa_kolorowa.jpg"
 
 # terrain_path = "meshes/generated_terrain.obj" if IS_RANDOM_TERRAIN else "meshes/testowe_ze_zdj.obj"

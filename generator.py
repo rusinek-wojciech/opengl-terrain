@@ -38,8 +38,8 @@ def generate_vertices(heightmap):
             vertices.append(point)
     return vertices
 
-def generate_tris():
-    tris = []
+def generate_triangles():
+    triangles = []
     for x in range(STEPS - 1):
         for y in range(STEPS - 1):
             index = x * STEPS + y
@@ -47,24 +47,24 @@ def generate_tris():
             b = index + 1
             c = index + STEPS + 1
             d = index + STEPS
-            tris.append((a, b, c))
-            tris.append((a, c, d))
-    return tris
+            triangles.append((a, b, c))
+            triangles.append((a, c, d))
+    return triangles
 
-def export_obj(vertices, tris, filename):
+def export_obj(vertices, triangles, filename):
     file = open(filename, "w")
-    for vertex in vertices:
-      file.write("v " + str(vertex[0]) + " " + str(vertex[1]) + " " + str(vertex[2]) + "\n")
-    for tri in tris:
-      file.write("f " + str(tri[2] + 1) + " " + str(tri[1] + 1) + " " + str(tri[0] + 1) + "\n")
+    for v in vertices:
+      file.write("v " + str(v[0]) + " " + str(v[1]) + " " + str(v[2]) + "\n")
+    for t in triangles:
+      file.write("f " + str(t[2] + 1) + " " + str(t[1] + 1) + " " + str(t[0] + 1) + "\n")
     file.close()
     return
 
 
 def generate_model(heightmap):
     vertices = generate_vertices(heightmap)
-    tris = generate_tris()
-    export_obj(vertices, tris, filename="meshes/generated_terrain.obj")
+    triangles = generate_triangles()
+    export_obj(vertices, triangles, filename="meshes/generated_terrain.obj")
 
 
 def generate_image(heightmap):
