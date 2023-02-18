@@ -10,7 +10,7 @@ from generator import generate
 # -----------------------------------------------------------------
 
 WIDTH, HEIGHT = 1280, 720
-IS_RANDOM_TERRAIN = False
+IS_RANDOM_TERRAIN = True
 
 TERRAIN_PATH = "meshes/bieszczady_1_2.obj"
 TEXTURE_PATH = "meshes/mapa_kolorowa.jpg"

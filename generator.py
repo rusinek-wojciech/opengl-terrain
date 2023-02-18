@@ -4,10 +4,10 @@ from PIL import Image
 import numpy as np
 from sklearn import preprocessing
 
-MAP_SIZE = 100
+MAP_SIZE = 200
 STEP = 1
 STEPS = MAP_SIZE * STEP
-MAX_HEIGHT = 10
+MAX_HEIGHT = 15
 
 def perlin_noise(x, y, seed):
     return noise.pnoise2(x / STEPS,
