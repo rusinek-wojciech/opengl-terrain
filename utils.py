@@ -8,7 +8,6 @@ def load_texture(path):
 
 
 def load_model(file):
-    buffer = []
     vertices = []
     textures = []
     normals = []
@@ -51,36 +50,39 @@ def load_model(file):
 
 
     if f_format == 1:
-        for i, ind in enumerate(all_indices):
+        buffer = buffer_vert_color(all_indices, vertices)
+        return indices, buffer
+    if f_format == 3:
+        buffer = buffer_vert_text_norm(all_indices, vertices, textures, normals)
+        return indices, buffer
+    
+    return
+
+
+def buffer_vert_color(all_indices, vertices):
+    buffer = []
+    for i, ind in enumerate(all_indices):
+        start = ind * 6
+        end = start + 6
+        buffer.extend(vertices[start:end])
+    
+    return buffer
+
+
+def buffer_vert_text_norm(all_indices, vertices, textures, normals): 
+    buffer = []
+    for i, ind in enumerate(all_indices):
+        if i % 3 == 0:
             start = ind * 3
             end = start + 3
             buffer.extend(vertices[start:end])
-            buffer.extend([0.5, 0.5])
-            buffer.extend([0.0, 0.0, 0.0])
-    elif f_format == 2:
-        for i, ind in enumerate(all_indices):
-            if i % 2 == 0:
-                start = ind * 3
-                end = start + 3
-                buffer.extend(vertices[start:end])
-            elif i % 2 == 1:
-                start = ind * 2
-                end = start + 2
-                buffer.extend(textures[start:end])
-                buffer.extend([0.0, 0.0, 0.0])
-    elif f_format == 3:
-        for i, ind in enumerate(all_indices):
-            if i % 3 == 0:
-                start = ind * 3
-                end = start + 3
-                buffer.extend(vertices[start:end])
-            elif i % 3 == 1:
-                start = ind * 2
-                end = start + 2
-                buffer.extend(textures[start:end])
-            elif i % 3 == 2:
-                start = ind * 3
-                end = start + 3
-                buffer.extend(normals[start:end])
-
-    return indices, buffer
+        elif i % 3 == 1:
+            start = ind * 2
+            end = start + 2
+            buffer.extend(textures[start:end])
+        elif i % 3 == 2:
+            start = ind * 3
+            end = start + 3
+            buffer.extend(normals[start:end])
+    
+    return buffer

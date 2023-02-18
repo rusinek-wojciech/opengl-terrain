@@ -5,7 +5,7 @@ import numpy as np
 from sklearn import preprocessing
 
 MAP_SIZE = 100
-STEP = 10
+STEP = 1
 STEPS = MAP_SIZE * STEP
 MAX_HEIGHT = 10
 
@@ -34,7 +34,7 @@ def generate_vertices(heightmap):
     vertices = []
     for x in range(STEPS):
         for y in range(STEPS):
-            point = (x / STEP, MAX_HEIGHT * heightmap[x][y], y / STEP)
+            point = (x / STEP, MAX_HEIGHT * heightmap[x, y], y / STEP, 0.1, heightmap[x, y], 0.1)
             vertices.append(point)
     return vertices
 
@@ -54,7 +54,7 @@ def generate_triangles():
 def export_obj(vertices, triangles, filename):
     file = open(filename, "w")
     for v in vertices:
-      file.write("v " + str(v[0]) + " " + str(v[1]) + " " + str(v[2]) + "\n")
+      file.write(f"v {str(v[0])} {str(v[1])} {str(v[2])} {str(v[3])} {str(v[4])} {str(v[5])}\n")
     for t in triangles:
       file.write("f " + str(t[2] + 1) + " " + str(t[1] + 1) + " " + str(t[0] + 1) + "\n")
     file.close()
