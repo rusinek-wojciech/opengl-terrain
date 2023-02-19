@@ -12,7 +12,7 @@ from generator import generate
 WIDTH, HEIGHT = 1280, 720
 IS_RANDOM_TERRAIN = False
 
-TERRAIN_PATH = "meshes/bieszczady_1_2.obj"
+TERRAIN_PATH = "meshes/bieszczady_1_3.obj"
 TEXTURE_PATH = "meshes/mapa_kolorowa.jpg"
 RANDOM_PATH = "meshes/generated_terrain.obj"
 
@@ -48,10 +48,12 @@ model_loc = glGetUniformLocation(shader, "model")
 proj_loc = glGetUniformLocation(shader, "projection")
 view_loc = glGetUniformLocation(shader, "view")
 view_pos_loc = glGetUniformLocation(shader, "viewPos")
+material_diffuse_loc = glGetUniformLocation(shader, "material_diffuse")
 
 window_resize(None)
 floor_pos = pyrr.matrix44.create_from_translation(pyrr.Vector3([0, 0, 0]))
 glUniformMatrix4fv(model_loc, 1, GL_FALSE, floor_pos)
+glUniform1i(material_diffuse_loc, 0)
 
 # -----------------------------------------------------------------
 

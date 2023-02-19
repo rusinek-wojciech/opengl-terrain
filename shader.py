@@ -60,12 +60,12 @@ uniform sampler2D material_diffuse;
 
 void main()
 {
-    vec3 material_specular = vec3(0.5f, 0.5f, 0.5f);
-    float material_shininess = 64.0f;
+    vec3 material_specular = vec3(0.4f, 0.4f, 0.4f);
+    float material_shininess = 16.0f;
 
     vec3 light_specular = vec3(1.0f, 1.0f, 1.0f);
-    vec3 light_ambient = vec3(0.2f, 0.2f, 0.2f);
-    vec3 light_position = vec3(1.2f, 1.0f, 2.0f);
+    vec3 light_ambient = vec3(0.3f, 0.3f, 0.3f);
+    vec3 light_position = vec3(20.0f, 30.0f, 10.0f);
     vec3 light_diffuse = vec3(0.5f, 0.5f, 0.5f);
 
     // ambient
