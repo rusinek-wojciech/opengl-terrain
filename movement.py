@@ -74,4 +74,8 @@ class Movement:
 
 	def get_view(self):
 		return self.camera.get_view_matrix()
+	
+
+	def get_view_position(self):
+		return self.camera.get_view_position()
 

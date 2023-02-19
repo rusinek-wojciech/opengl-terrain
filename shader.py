@@ -12,12 +12,17 @@ uniform mat4 model;
 uniform mat4 projection;
 uniform mat4 view;
 
-out vec2 v_texture;
+out vec2 TexCoords;
+out vec3 Normal;
+out vec3 FragPos;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(a_position, 1.0);
-    v_texture = a_texture;
+    FragPos = vec3(model * vec4(a_position, 1.0));
+    Normal = mat3(transpose(inverse(model))) * a_normal;
+    TexCoords = a_texture;
+
+    gl_Position = projection * view * vec4(a_position, 1.0);
 }
 """
 
@@ -44,13 +49,42 @@ void main()
 terr_fragment_src = """
 # version 330
 
-in vec2 v_texture;
-out vec4 out_color;
-uniform sampler2D s_texture;
+in vec3 FragPos;  
+in vec3 Normal;  
+in vec2 TexCoords;
+
+out vec4 FragColor;
+
+uniform vec3 viewPos;
+uniform sampler2D material_diffuse;
 
 void main()
 {
-    out_color = texture(s_texture, v_texture);
+    vec3 material_specular = vec3(0.5f, 0.5f, 0.5f);
+    float material_shininess = 64.0f;
+
+    vec3 light_specular = vec3(1.0f, 1.0f, 1.0f);
+    vec3 light_ambient = vec3(0.2f, 0.2f, 0.2f);
+    vec3 light_position = vec3(1.2f, 1.0f, 2.0f);
+    vec3 light_diffuse = vec3(0.5f, 0.5f, 0.5f);
+
+    // ambient
+    vec3 ambient = light_ambient * texture(material_diffuse, TexCoords).rgb;
+
+    // diffuse 
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(light_position - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = light_diffuse * diff * texture(material_diffuse, TexCoords).rgb;  
+
+    // specular
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material_shininess);
+    vec3 specular = light_specular * (spec * material_specular);  
+        
+    vec3 result = ambient + diffuse + specular;
+    FragColor = vec4(result, 1.0);
 }
 """
 

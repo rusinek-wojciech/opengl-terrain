@@ -18,6 +18,11 @@ class Camera:
         return matrix44.create_look_at(self.camera_pos, self.camera_pos + self.camera_front, self.camera_up)
 
 
+    def get_view_position(self):
+        looking_at = self.camera_pos + self.camera_front
+        return looking_at
+    
+
     def process_mouse_movement(self, xoffset, yoffset, constrain_pitch=True):
         xoffset *= self.mouse_sensitivity
         yoffset *= self.mouse_sensitivity
