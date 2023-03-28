@@ -12,5 +12,8 @@
 
 `OpenGL-Terrain` has a "random" mode that generates a terrain using Perlin noise. The program will generate a random heightmap, save it as a `.obj` file and display the terrain in real-time.
 
+---
 
 ![Terrain](.github/assets/terrain.png 'Terrain')
+
+The above image shows an example imported terrain - 'Bieszczady' from heightmap.
